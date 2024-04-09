@@ -151,22 +151,6 @@ csrs_map = -- User Trap Setup
            , (0xC81, "timeh")
            , (0xC82, "instreth") ]
         ++ [ (0xC80 + x, "hpmcounter" ++ show x ++ "h") | x <- hpmcounter_indices ]
-        ++ -- Supervisor Trap Setup
-           [ (0x100, "sstatus")
-           , (0x102, "sedeleg")
-           , (0x103, "sideleg")
-           , (0x104, "sie")
-           , (0x105, "stvec")
-           , (0x106, "scounteren") ]
-        ++ -- Supervisor Trap Handling
-           [ (0x140, "sscratch")
-           , (0x141, "sepc")
-           , (0x142, "scause")
-           , (0x143, "stval")
-           , (0x144, "sip") ]
-        ++ -- Supervisor Protection and Translation
-           [ (0x180, "satp") ]
-        -- TODO Hypervisor CSRs
         ++ -- Machine Information Registers
            [ (0xF11, "mvendorid")
            , (0xF12, "marchid")
@@ -178,18 +162,13 @@ csrs_map = -- User Trap Setup
            , (0x302, "medeleg")
            , (0x303, "mideleg")
            , (0x304, "mie")
-           , (0x305, "mtvec")
            , (0x306, "mcounteren")
            , (0x310, "mstatush") ]
         ++ -- Machine Trap Handling
            [ (0x340, "mscratch")
-           , (0x341, "mepc")
            , (0x342, "mcause")
            , (0x343, "mtval")
            , (0x344, "mip") ]
-        ++ -- Machine Memory Protection
-           [ (0x3A0 + x, "pmpcfg" ++ show x) | x <- [0..3] ]
-        ++ [ (0x3B0 + x, "pmpaddr" ++ show x) | x <- [0..15] ]
         ++ -- Machine Counters/Timers
            [ (0xB00, "mcycle")
            , (0xB02, "minstret") ]
@@ -200,10 +179,6 @@ csrs_map = -- User Trap Setup
         ++ [ (0xB80 + x, "mhpmcounter" ++ show x ++ "h") | x <- hpmcounter_indices ]
         ++ -- Machine Counter Setup
            [ (0x320, "mcountinhibit") ]
-        ++ -- CHERI CSRs
-           [ (0x8C0, "uccsr")
-           , (0x9C0, "sccsr")
-           , (0xBC0, "mccsr") ]
         ++ map (\x -> (x, "mhpmevent" ++ show (x - (head mhpmevent_csr_indices) + 3)))
                mhpmevent_csr_indices
         -- TODO Debug/Trace Registers (shared with Debug Mode)

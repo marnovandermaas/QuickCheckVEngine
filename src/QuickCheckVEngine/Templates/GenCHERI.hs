@@ -105,11 +105,7 @@ genRandomCHERITest = readParams $ \param -> random $ do
   csrAddr   <- frequency [ (1, return (unsafe_csrs_indexFromName "mccsr"))
                          , (1, return (unsafe_csrs_indexFromName "mcause")) ]
   srcScr    <- elements $ [0, 1, 28, 29, 30, 31] ++ (if has_s arch then [12, 13, 14, 15] else []) ++ [2]
-  let allowedCsrs = filter (csrFilter param) [ unsafe_csrs_indexFromName "sepc"
-                                             , unsafe_csrs_indexFromName "mepc" ]
-  let allowedCsrsRO = [ unsafe_csrs_indexFromName "scause"
-                      , unsafe_csrs_indexFromName "mcause" ]
-  srcCsr    <- if null allowedCsrs then return Nothing else Just <$> elements allowedCsrs
+  let allowedCsrsRO = [unsafe_csrs_indexFromName "mcause"]
   srcCsrRO  <- elements allowedCsrsRO
   return $ dist [ (5, legalLoad)
                 , (5, legalStore)
@@ -118,7 +114,6 @@ genRandomCHERITest = readParams $ \param -> random $ do
                 , (10, instUniform $ rv32_i srcAddr srcData dest imm longImm fenceOp1 fenceOp2)
                 , (10, instUniform $ rv32_xcheri arch srcAddr srcData srcScr imm mop dest)
                 , (10, inst $ cspecialrw dest srcScr srcAddr)
-                , (5, maybe mempty (\idx -> instUniform $ rv32_zicsr srcData dest idx mop) srcCsr)
                 , (5, csrr dest srcCsrRO)
                 , (10, switchEncodingMode)
                 , (10, cspecialRWChain)
