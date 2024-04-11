@@ -104,7 +104,8 @@ genRandomCHERITest = readParams $ \param -> random $ do
   fenceOp2  <- (bits 4)
   csrAddr   <- frequency [ (1, return (unsafe_csrs_indexFromName "mccsr"))
                          , (1, return (unsafe_csrs_indexFromName "mcause")) ]
-  srcScr    <- elements $ [0, 1, 28, 29, 30, 31] ++ (if has_s arch then [12, 13, 14, 15] else []) ++ [2]
+  -- srcScr    <- elements $ [0, 1, 28, 29, 30, 31] ++ (if has_s arch then [12, 13, 14, 15] else []) ++ [2]
+  srcScr    <- elements [28, 29, 30, 31] -- CHERIoT has limited cspecialrw targets
   let allowedCsrsRO = [unsafe_csrs_indexFromName "mcause"]
   srcCsrRO  <- elements allowedCsrsRO
   return $ dist [ (5, legalLoad)
